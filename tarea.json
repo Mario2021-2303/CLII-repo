@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nombre": "Pruebo",
+        "descripcion": "De probar mas duro",
+        "estado": "Terminado",
+        "fecha": "2026-04-20",
+        "modificado": "2026-04-20"
+    },
+    {
+        "id": 2,
+        "nombre": "Pruebas",
+        "descripcion": "Pruebo la fecha de modificacion",
+        "estado": "En progreso",
+        "fecha": "2026-04-20",
+        "modificado": "2026-04-20"
+    },
+    {
+        "id": 3,
+        "nombre": "Probando args",
+        "descripcion": "De ver como args funciona",
+        "estado": "Terminado",
+        "fecha": "2026-04-20",
+        "modificado": ""
+    }
+]
