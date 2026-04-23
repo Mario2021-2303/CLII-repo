@@ -21,27 +21,21 @@ def guardar_tareas(lista_tareas, ruta_archivo):
         json.dump(lista_tareas, f, indent=4)
 
 
-def crear_tarea():
+def crear_tarea(nuevo_id, nombre, descripcion, id_estado):
     lista_tareas, ruta_archivo = cargar_datos()
  
-    nombre = input("Ingresa tu nombre por favor: ")
-    descripcion = input("¿De qué va la tarea?: ")
-
+   
     nuevo_id = max([t["id"] for t in lista_tareas], default=0) + 1
 
-    id_estado = int(input("Estado de la TAREA:\n" 
-                    "1.TERMINADO\n"
-                    "2.EN PROGRESO\n"
-                    "3.SIN TERMINAR"))
     
     
         
     if id_estado == 1:
-           estado = "Terminado"
+           id_estado = "Terminado"
     elif id_estado == 2:
-           estado = "En progreso"
+           id_estado = "En progreso"
     elif id_estado == 3:
-           estado = "Sin terminar"
+           id_estado = "Sin terminar"
     else: 
         
         print("ESTADO NO EXISTENTE")
@@ -55,7 +49,7 @@ def crear_tarea():
         "id": nuevo_id,
         "nombre": nombre,
         "descripcion": descripcion,
-        "estado": estado,
+        "estado": id_estado,
         "fecha": today,
         "modificado": ""
     }
@@ -63,6 +57,7 @@ def crear_tarea():
     lista_tareas.append(tarea)
 
     guardar_tareas(lista_tareas, ruta_archivo)
+    return nuevo_id, nombre, descripcion, id_estado
 
 def borrar_tarea(id_borrado):
     lista_tareas, ruta_archivo = cargar_datos()
@@ -165,19 +160,25 @@ def cambiar_estado(id_editor, nuevo_estado):
     
     
 def mostrar_ayuda():
-    print("\n" + "="*30)
-    print("   GESTOR DE TAREAS CLI")
-    print("="*30)
-    print("Uso: python TODO.PY [OPCIÓN]")
-    print("\nOpciones disponibles:")
-    print("  --list      : Listar todas las tareas")
-    print("  --create    : Añadir una nueva tarea")
-    print("  --modify    : Editar una tarea existente")
-    print("  --status    : Cambiar el estado de una tarea")
-    print("  --delete    : Eliminar una tarea por ID")
-    print("="*30 + "\n")
-   
+    print("\n" + "="*45)
+    print("      ✨ GESTOR DE TAREAS CLI - v1.0 ✨")
+    print("="*45)
+    print("Uso: python TODO.PY [OPCIÓN] [PARÁMETROS]")
+    
+    print("\nOPCIONES PRINCIPALES:")
+    print("  --list           : Listar todas las tareas registradas.")
+    print("  --create         : Crear tarea (requiere --nombre, --des, --set).")
+    print("  --modify [ID]    : Modificar una tarea (requiere --nombre o --des).")
+    print("  --status [ID]    : Cambiar estado (requiere --set).")
+    print("  --delete [ID]    : Eliminar una tarea permanentemente.")
 
+    print("\nPARÁMETROS ADICIONALES:")
+    print("  --nombre \"Texto\" : Nombre de la tarea.")
+    print("  --des    \"Texto\" : Descripción de la tarea.")
+    print("  --est    [1-3]   : Estado inicial (1:Terminado, 2:Progreso, 3:Sin terminar).")
+    print("  --set    [1-3]   : Nuevo estado para la opción --status.")
+    
+   
 
 
     
@@ -206,7 +207,7 @@ if __name__ == "__main__":
      if args.list:
        mostrar_tareas()
      elif args.create:
-      crear_tarea()
+      crear_tarea(args.create, args.nombre, args.des, args.set)
      elif args.modify:
       modificar_tareas(args.modify, args.nombre, args.des)
      elif args.status:
