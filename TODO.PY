@@ -64,9 +64,9 @@ def crear_tarea():
 
     guardar_tareas(lista_tareas, ruta_archivo)
 
-def borrar_tarea():
+def borrar_tarea(id_borrado):
     lista_tareas, ruta_archivo = cargar_datos()
-    id_borrado = int(input("Cual es el ID de la tarea"))
+    
     
     
     # Comprobamos si el ID existe en alguno de los diccionarios
@@ -80,27 +80,26 @@ def borrar_tarea():
     else:
         print("ID no encontrado")
         return
+    
+    return id_borrado
   
-    guardar_tareas(lista_tareas, ruta_archivo)
 
 def mostrar_tareas():
     lista_tareas = cargar_datos()
     for tarea in lista_tareas[0]:
         print(tarea)
 
-def modificar_tareas():
+def modificar_tareas(id_editor, nuevo_nombre, nueva_descripcion):
     lista_tareas, ruta_archivo = cargar_datos()
     today = str(date.today())
 
-    id_editor = int(input("Ingrese el ID a editar"))
     
     
     existe = any(t["id"] == id_editor for t in lista_tareas)
    
     if existe:
       
-      nuevo_nombre = input("Ingrese nombre a editar")
-      nueva_descripcion = input("Ingrese nueva descripcion")
+     
 
       lista_tareas = [
             {**t, "nombre": nuevo_nombre, "descripcion": nueva_descripcion, "modificado":today} 
@@ -111,19 +110,24 @@ def modificar_tareas():
        print("ID no encontrado")
        return
     
-    guardar_tareas(lista_tareas, ruta_archivo)
+    guardar_tareas(lista_tareas, ruta_archivo) 
+    
+    return id_editor, nuevo_nombre, nueva_descripcion
 
-def cambiar_estado():
+
+
+
+
+
+
+def cambiar_estado(id_editor, nuevo_estado):
     lista_tareas, ruta_archivo = cargar_datos()
     today = str(date.today())
 
-    id_editor = int(input("Ingrese el ID de la tarea"))
     existe = any(t["id"] == id_editor for t in lista_tareas)
     if existe:
-               nuevo_estado = int(input("Estado de la TAREA:\n" 
-                    "1.TERMINADO\n"
-                    "2.EN PROGRESO\n"
-                    "3.SIN TERMINAR"))
+
+               
     
         
                if nuevo_estado == 1:
@@ -138,6 +142,17 @@ def cambiar_estado():
     else:
         print("TAREA NO EXISTE")
         return 
+    
+    
+    lista_tareas = [
+        {**t, "estado": nuevo_estado, "modificado":today} if t["id"] == id_editor else t 
+        for t in lista_tareas
+    ]
+
+    
+    guardar_tareas(lista_tareas, ruta_archivo)
+
+    return id_editor, nuevo_estado
  
         
        
@@ -147,14 +162,6 @@ def cambiar_estado():
    
 
    
-    lista_tareas = [
-        {**t, "estado": nuevo_estado, "modificado":today} if t["id"] == id_editor else t 
-        for t in lista_tareas
-    ]
-
-    
-    guardar_tareas(lista_tareas, ruta_archivo)
-
     
     
 def mostrar_ayuda():
@@ -182,9 +189,12 @@ if __name__ == "__main__":
      parser = argparse.ArgumentParser(description="Gestor de Tareas")
      parser.add_argument("--list", action="store_true", help="Muestra todas las tareas")
      parser.add_argument("--create", action="store_true", help="Crea una tarea")
-     parser.add_argument("--modify", action="store_true", help="Modifica una tarea")
-     parser.add_argument("--status", action="store_true", help="Cambia el estado de una tarea")
-     parser.add_argument("--delete", action="store_true", help="BORRA UNA TAREA")
+     parser.add_argument("--modify", type=int, help="Modifica una tarea")
+     parser.add_argument("--status", type=int, help="ID de la tarea a cambiar")
+     parser.add_argument("--set", type=int, help="Nuevo estado (1: Terminado, 2: Proceso, 3: Pendiente)")
+     parser.add_argument("--nombre", type=str, help="PARAMETRO DE LA TAREA: NOMBRE")
+     parser.add_argument("--des", type=str, help="PARAMETRO DE LA TAREA: DESCRIPCION")
+     parser.add_argument("--delete", type=int, help="BORRA UNA TAREA")    
      parser.add_argument("--help_custom", action="store_true")
 
      if len(sys.argv) == 1:
@@ -198,11 +208,11 @@ if __name__ == "__main__":
      elif args.create:
       crear_tarea()
      elif args.modify:
-      modificar_tareas()
+      modificar_tareas(args.modify, args.nombre, args.des)
      elif args.status:
-      cambiar_estado()
+      cambiar_estado(args.status, args.set)
      elif args.delete:
-      borrar_tarea()
+      borrar_tarea(args.delete)
      elif args.help_custom:
          help()
 
